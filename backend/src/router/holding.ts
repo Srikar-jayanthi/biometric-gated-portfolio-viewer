@@ -65,4 +65,40 @@ export const holdingRouter = router({
 
       return { success: true };
     }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        shareCount: z.number().positive(),
+        purchasePrice: z.number().nonnegative(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const holding = await ctx.prisma.holding.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!holding || holding.userId !== ctx.session.userId) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Holding not found or unauthorized',
+        });
+      }
+
+      const updatedHolding = await ctx.prisma.holding.update({
+        where: { id: input.id },
+        data: {
+          shareCount: input.shareCount,
+          purchasePrice: input.purchasePrice,
+        },
+      });
+
+      return {
+        id: updatedHolding.id,
+        ticker: updatedHolding.ticker,
+        shareCount: updatedHolding.shareCount,
+        purchasePrice: updatedHolding.purchasePrice,
+      };
+    }),
 });
