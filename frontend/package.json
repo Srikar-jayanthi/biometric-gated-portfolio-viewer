@@ -1,0 +1,28 @@
+{
+  "name": "portfolio-frontend",
+  "version": "1.0.0",
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.36.1",
+    "@trpc/client": "^10.45.2",
+    "@trpc/react-query": "^10.45.2",
+    "expo": "~51.0.0",
+    "expo-local-authentication": "~14.0.1",
+    "expo-secure-store": "~13.0.2",
+    "react": "18.2.0",
+    "react-native": "0.74.1",
+    "react-native-svg": "15.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.45",
+    "typescript": "~5.3.3"
+  },
+  "private": true
+}
