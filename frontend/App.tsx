@@ -15,9 +15,6 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import * as LocalAuthentication from 'expo-local-authentication';
-import * as SecureStore from 'expo-secure-store';
-import { Svg, Polyline } from 'react-native-svg';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
@@ -35,6 +32,7 @@ const saveToken = async (val: string) => {
     if (Platform.OS === 'web') {
       localStorage.setItem('token', val);
     } else {
+      const SecureStore = require('expo-secure-store');
       await SecureStore.setItemAsync('token', val);
     }
   } catch (err) {
@@ -47,6 +45,7 @@ const getToken = async () => {
     if (Platform.OS === 'web') {
       return localStorage.getItem('token');
     } else {
+      const SecureStore = require('expo-secure-store');
       return await SecureStore.getItemAsync('token');
     }
   } catch (err) {
@@ -59,6 +58,7 @@ const removeToken = async () => {
     if (Platform.OS === 'web') {
       localStorage.removeItem('token');
     } else {
+      const SecureStore = require('expo-secure-store');
       await SecureStore.deleteItemAsync('token');
     }
   } catch (err) {
@@ -116,6 +116,18 @@ const Sparkline: React.FC<SparklineProps> = ({
     : currentPrice >= purchasePrice
     ? '#10B981' // emerald green
     : '#EF4444'; // rose red
+
+  if (Platform.OS === 'web') {
+    return (
+      <View data-testid={`sparkline-container-${ticker}`} style={styles.sparklineContainer}>
+        <svg width={width} height={height}>
+          <polyline points={points} fill="none" stroke={strokeColor} strokeWidth="2" />
+        </svg>
+      </View>
+    );
+  }
+
+  const { Svg, Polyline } = require('react-native-svg');
 
   return (
     <View data-testid={`sparkline-container-${ticker}`} style={styles.sparklineContainer}>
@@ -311,6 +323,7 @@ function MainApp() {
       return;
     }
     try {
+      const LocalAuthentication = require('expo-local-authentication');
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
