@@ -161,7 +161,9 @@ function MainApp() {
   // Real-time prices state
   interface PriceData {
     price: number;
-    timestamp: number;
+    timestamp?: number;
+    lastUpdated?: number;
+    updatedAt?: number;
     history: number[];
   }
   const [prices, setPrices] = useState<Record<string, PriceData>>({});
@@ -521,7 +523,7 @@ function MainApp() {
     const currentPrice = tickerData ? tickerData.price : holding.purchasePrice;
     
     // Check if stale
-    const timestamp = tickerData?.timestamp;
+    const timestamp = tickerData?.timestamp || tickerData?.lastUpdated || tickerData?.updatedAt;
     let isStale = false;
     if (timestamp) {
       const parsedTime = typeof timestamp === 'number' ? (timestamp < 9999999999 ? timestamp * 1000 : timestamp) : new Date(timestamp).getTime();
