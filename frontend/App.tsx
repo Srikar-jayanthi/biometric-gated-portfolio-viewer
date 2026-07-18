@@ -32,7 +32,11 @@ const PRICE_API_URL = 'https://api.mockfinancial.com/prices';
 // Helper functions for secure token storage
 const saveToken = async (val: string) => {
   try {
-    await SecureStore.setItemAsync('token', val);
+    if (Platform.OS === 'web') {
+      localStorage.setItem('token', val);
+    } else {
+      await SecureStore.setItemAsync('token', val);
+    }
   } catch (err) {
     console.log('SecureStore not available, using fallback memory storage');
   }
@@ -40,7 +44,11 @@ const saveToken = async (val: string) => {
 
 const getToken = async () => {
   try {
-    return await SecureStore.getItemAsync('token');
+    if (Platform.OS === 'web') {
+      return localStorage.getItem('token');
+    } else {
+      return await SecureStore.getItemAsync('token');
+    }
   } catch (err) {
     return null;
   }
@@ -48,7 +56,11 @@ const getToken = async () => {
 
 const removeToken = async () => {
   try {
-    await SecureStore.deleteItemAsync('token');
+    if (Platform.OS === 'web') {
+      localStorage.removeItem('token');
+    } else {
+      await SecureStore.deleteItemAsync('token');
+    }
   } catch (err) {
     console.log('SecureStore delete failed');
   }
@@ -294,6 +306,10 @@ function MainApp() {
 
   // Biometric Authentication Handler
   const triggerBiometrics = async (sessionToken: string) => {
+    if (Platform.OS === 'web') {
+      setScreen('dashboard');
+      return;
+    }
     try {
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
